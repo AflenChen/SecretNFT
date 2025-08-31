@@ -1,31 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { Wallet, Plus, Eye, Clock, Users, TrendingUp, Shield, Zap, CheckCircle, AlertCircle, Image } from 'lucide-react';
+import { Wallet, Plus, Eye, Clock, Users, TrendingUp, Shield, Zap, CheckCircle, Image } from 'lucide-react';
 import CreateLaunchModal from './components/CreateLaunchModal';
 import ParticipateModal from './components/ParticipateModal';
 import LaunchDetailModal from './components/LaunchDetailModal';
 import WalletManager from './components/WalletManager';
 import NFTPublisher from './components/NFTPublisher';
 import { LaunchImage } from './components/ImageManager';
-import { getIPFSImageUrl, getNFTStatus } from './utils/ipfs';
-import { testIPFSUpload } from './utils/test-ipfs';
-import { validateLaunchData, getLaunchStats, formatETH } from './utils/contractUtils';
-import IPFSTestModal from './components/IPFSTestModal';
-import { testEnvironmentVariables } from './utils/envTest';
+import { getNFTStatus } from './utils/ipfs';
 import { getDefaultImageUrl } from './utils/defaultImage';
-import { getNFTImageUrl, getNFTInfo } from './utils/nftUtils';
-import { fullDebug } from './utils/debugUtils';
-import { createLaunchesForAllNFTs } from './utils/manualLaunch';
-import { fullContractTest } from './utils/testContract';
-import { fullErrorDiagnosis } from './utils/errorDiagnosis';
-import { simpleDiagnosis } from './utils/simpleDiagnosis';
-import './utils/consoleDiagnosis';
-import { processNFTCollection } from './utils/findNFTCollection';
-import { debugNFTCollectionFlow } from './utils/debugNFTCollection';
-import { fullContractStatusCheck } from './utils/checkContractStatus';
-import { processNFTLaunch } from './utils/createLaunchForNFT';
-import { fullPermissionCheck } from './utils/checkOwner';
-import { registerAndCreateLaunch } from './utils/registerAndCreateLaunch';
 import CONTRACT_ADDRESSES from './config/contracts';
 
 // Contract ABIs
@@ -106,7 +89,7 @@ function App() {
   const [userParticipations, setUserParticipations] = useState<Map<number, UserParticipation>>(new Map());
   const [isOwner, setIsOwner] = useState(false);
   const [showLaunchDetailModal, setShowLaunchDetailModal] = useState(false);
-  const [showIPFSTestModal, setShowIPFSTestModal] = useState(false);
+
   const [nftImageUrls, setNftImageUrls] = useState<Map<string, string>>(new Map()); // Store NFT contract address to image URL mapping
 
   // Contract addresses from deployed contracts
@@ -875,10 +858,7 @@ function App() {
          loading={loading}
        />
 
-       <IPFSTestModal
-         isOpen={showIPFSTestModal}
-         onClose={() => setShowIPFSTestModal(false)}
-       />
+       
     </div>
   );
 }
