@@ -136,6 +136,9 @@ playwright-report/
 *token*
 *credential*
 
+# Allow SecretNFT contract files
+!contracts/SecretNFT*.sol
+
 # API keys and endpoints
 *api_key*
 *api_key*
