@@ -8,7 +8,7 @@ const CONTRACT_ADDRESSES = {
   NETWORK: {
     name: "sepolia",
     chainId: 11155111,
-    rpcUrl: "https://eth-sepolia.g.alchemy.com/v2/Jf6yAV5m2XGr41Ly0VSw5GjmDU6xdMTa"
+    rpcUrl: "https://rpc.sepolia.org"
   }
 };
 

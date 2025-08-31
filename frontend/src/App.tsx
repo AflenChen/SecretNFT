@@ -182,7 +182,7 @@ function App() {
                 symbol: 'SEP',
                 decimals: 18
               },
-              rpcUrls: ['https://eth-sepolia.g.alchemy.com/v2/Jf6yAV5m2XGr41Ly0VSw5GjmDU6xdMTa'],
+              rpcUrls: ['https://rpc.sepolia.org'],
               blockExplorerUrls: ['https://sepolia.etherscan.io/']
             }]
           });
@@ -201,9 +201,19 @@ function App() {
         await switchToSepolia();
         
         const provider = new ethers.BrowserProvider(window.ethereum);
-        const signer = await provider.getSigner();
-        const accounts = await provider.send("eth_requestAccounts", []);
+        
+        // Add retry mechanism for account request
+        let accounts;
+        try {
+          accounts = await provider.send("eth_requestAccounts", []);
+        } catch (accountError) {
+          console.error('Account request failed, trying alternative method:', accountError);
+          // Try alternative method
+          accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        }
+        
         const account = accounts[0];
+        const signer = await provider.getSigner();
         
         // Verify we're on the correct network
         const network = await provider.getNetwork();
@@ -222,7 +232,7 @@ function App() {
         console.log('Wallet connected:', account);
       } catch (error) {
         console.error('Error connecting wallet:', error);
-        alert('Failed to connect wallet. Please try again.');
+        alert('Failed to connect wallet. Please try again. Make sure MetaMask is unlocked and you\'re on Sepolia testnet.');
       }
     } else {
       alert('Please install MetaMask!');
