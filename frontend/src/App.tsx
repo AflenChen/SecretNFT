@@ -160,13 +160,57 @@ function App() {
     }
   };
 
+  const switchToSepolia = async () => {
+    if (typeof window.ethereum === 'undefined') return;
+    
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0xaa36a7' }], // Sepolia chainId
+      });
+    } catch (switchError: any) {
+      // This error code indicates that the chain has not been added to MetaMask
+      if (switchError.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: '0xaa36a7',
+              chainName: 'Sepolia',
+              nativeCurrency: {
+                name: 'Sepolia Ether',
+                symbol: 'SEP',
+                decimals: 18
+              },
+              rpcUrls: ['https://eth-sepolia.g.alchemy.com/v2/Jf6yAV5m2XGr41Ly0VSw5GjmDU6xdMTa'],
+              blockExplorerUrls: ['https://sepolia.etherscan.io/']
+            }]
+          });
+        } catch (addError) {
+          console.error('Error adding Sepolia network:', addError);
+          alert('Failed to add Sepolia network to MetaMask');
+        }
+      }
+    }
+  };
+
   const connectWallet = async () => {
     if (typeof window.ethereum !== 'undefined') {
       try {
+        // First, ensure we're on the correct network
+        await switchToSepolia();
+        
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
         const accounts = await provider.send("eth_requestAccounts", []);
         const account = accounts[0];
+        
+        // Verify we're on the correct network
+        const network = await provider.getNetwork();
+        if (network.chainId !== 11155111n) { // Sepolia chainId
+          alert('Please switch to Sepolia testnet in MetaMask');
+          return;
+        }
         
         setProvider(provider);
         setSigner(signer);
