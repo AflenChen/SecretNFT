@@ -149,16 +149,47 @@ export default function NFTPublisher({ isOpen, onClose, onPublish }: NFTPublishe
       setUploadProgress(0);
       setDeploymentStep('Connecting to wallet...');
 
-      // Connect wallet
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      
-      // Check network
-      const network = await provider.getNetwork();
-      if (network.chainId !== 11155111n) { // Sepolia testnet
-        alert('Please switch to Sepolia testnet to create NFT collections!');
+      // Try to get the wallet provider with better error handling
+      let walletProvider;
+      if (typeof window.ethereum !== 'undefined') {
+        walletProvider = window.ethereum;
+      } else if (typeof window.okxwallet !== 'undefined') {
+        walletProvider = window.okxwallet;
+      } else {
+        alert('No compatible wallet found. Please install MetaMask or OKX Wallet!');
         setLoading(false);
         return;
+      }
+
+      // Create provider with better configuration
+      const provider = new ethers.BrowserProvider(walletProvider, undefined, {
+        polling: true,
+        pollingInterval: 1000
+      });
+
+      // Try to get signer with retry mechanism
+      let signer;
+      try {
+        signer = await provider.getSigner();
+      } catch (signerError) {
+        console.error('Error getting signer:', signerError);
+        alert('Failed to connect wallet. Please make sure your wallet is unlocked and try again.');
+        setLoading(false);
+        return;
+      }
+      
+      // Check network with better error handling
+      try {
+        const network = await provider.getNetwork();
+        console.log('Current network:', network);
+        if (network.chainId !== 11155111n) { // Sepolia testnet
+          alert('Please switch to Sepolia testnet to create NFT collections!');
+          setLoading(false);
+          return;
+        }
+      } catch (networkError) {
+        console.warn('Could not verify network, continuing anyway:', networkError);
+        // Don't block the process if we can't verify the network
       }
 
       setUploadProgress(20);
@@ -305,10 +336,19 @@ export default function NFTPublisher({ isOpen, onClose, onPublish }: NFTPublishe
       setDeploymentStep('');
       setLoading(false);
       
-      if (error instanceof Error) {
-        alert(`Failed to create NFT collection: ${error.message}`);
+      // Provide more specific error messages
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      if (errorMessage.includes('User rejected')) {
+        alert('Transaction was rejected by user. Please try again and approve the transaction in your wallet.');
+      } else if (errorMessage.includes('insufficient funds')) {
+        alert('Insufficient funds for transaction. Please make sure you have enough ETH for gas fees and creation fee.');
+      } else if (errorMessage.includes('network') || errorMessage.includes('RPC')) {
+        alert('Network connection error. Please check your internet connection and try again.');
+      } else if (errorMessage.includes('could not coalesce error')) {
+        alert('Wallet connection error. Please try refreshing the page and reconnecting your wallet.');
       } else {
-        alert('Failed to create NFT collection. Please try again.');
+        alert(`Failed to create NFT collection: ${errorMessage}`);
       }
     }
   };
