@@ -970,6 +970,8 @@ function App() {
         onClose={() => setShowNFTPublisher(false)}
         onPublish={handlePublishNFT}
         loading={loading}
+        provider={provider}
+        signer={signer}
       />
 
              <LaunchDetailModal
