@@ -6,6 +6,7 @@ import ParticipateModal from './components/ParticipateModal';
 import LaunchDetailModal from './components/LaunchDetailModal';
 import WalletManager from './components/WalletManager';
 import NFTPublisher from './components/NFTPublisher';
+import WalletSelector from './components/WalletSelector';
 import { LaunchImage } from './components/ImageManager';
 import { getNFTStatus } from './utils/ipfs';
 import { getDefaultImageUrl } from './utils/defaultImage';
@@ -89,6 +90,7 @@ function App() {
   const [userParticipations, setUserParticipations] = useState<Map<number, UserParticipation>>(new Map());
   const [isOwner, setIsOwner] = useState(false);
   const [showLaunchDetailModal, setShowLaunchDetailModal] = useState(false);
+  const [showWalletSelector, setShowWalletSelector] = useState(false);
 
   const [nftImageUrls, setNftImageUrls] = useState<Map<string, string>>(new Map()); // Store NFT contract address to image URL mapping
 
@@ -202,60 +204,38 @@ function App() {
   };
 
   const connectWallet = async () => {
-    // Check for any Web3 wallet
-    if (typeof window.ethereum === 'undefined' && typeof window.okxwallet === 'undefined') {
-      alert('Please install a Web3 wallet like MetaMask, OKX Wallet, or any other compatible wallet!');
-      return;
-    }
+    // Show wallet selector instead of auto-detecting
+    setShowWalletSelector(true);
+  };
 
+  const handleWalletSelect = async (wallet: any) => {
+    setShowWalletSelector(false);
+    
     try {
-      // Try to get the wallet provider
-      let walletProvider;
-      let walletName = 'Unknown';
-      
-      // Try different wallet providers
-      if (typeof window.ethereum !== 'undefined') {
-        walletProvider = window.ethereum;
-        walletName = 'MetaMask';
-      } else if (typeof window.okxwallet !== 'undefined') {
-        walletProvider = window.okxwallet;
-        walletName = 'OKX Wallet';
-      }
-      
-      if (!walletProvider) {
-        throw new Error('No compatible wallet found');
-      }
-      
-      console.log(`Connecting to ${walletName}...`);
-      
-      // First, ensure we're on the correct network
-      await switchToSepolia(walletProvider);
+      console.log(`Connecting to ${wallet.name}...`);
       
       // Create provider
-      const provider = new ethers.BrowserProvider(walletProvider as any, undefined, {
+      const provider = new ethers.BrowserProvider(wallet.provider as any, undefined, {
         polling: true,
         pollingInterval: 1000
       });
       
       // Try multiple methods to get accounts
       let accounts;
-      let accountError;
       
       // Method 1: Try provider.send
       try {
         accounts = await provider.send("eth_requestAccounts", []);
       } catch (error) {
         console.log('Method 1 failed, trying method 2:', error);
-        accountError = error;
       }
       
       // Method 2: Try direct wallet request
       if (!accounts) {
         try {
-          accounts = await walletProvider.request({ method: 'eth_requestAccounts' });
+          accounts = await wallet.provider.request({ method: 'eth_requestAccounts' });
         } catch (error) {
           console.log('Method 2 failed, trying method 3:', error);
-          accountError = error;
         }
       }
       
@@ -263,10 +243,9 @@ function App() {
       if (!accounts) {
         try {
           await new Promise(resolve => setTimeout(resolve, 1000));
-          accounts = await walletProvider.request({ method: 'eth_requestAccounts' });
+          accounts = await wallet.provider.request({ method: 'eth_requestAccounts' });
         } catch (error) {
           console.log('Method 3 failed:', error);
-          accountError = error;
         }
       }
       
@@ -299,7 +278,7 @@ function App() {
       // Set up contracts
       setupContracts(signer);
       
-      console.log(`Wallet connected successfully: ${account} (${walletName})`);
+      console.log(`Wallet connected successfully: ${account} (${wallet.name})`);
     } catch (error) {
       console.error('Error connecting wallet:', error);
       
@@ -988,6 +967,12 @@ function App() {
          onParticipate={handleParticipate}
          onClaimNFTs={handleClaimNFTs}
          loading={loading}
+       />
+
+       <WalletSelector
+         isOpen={showWalletSelector}
+         onWalletSelect={handleWalletSelect}
+         onClose={() => setShowWalletSelector(false)}
        />
 
        
