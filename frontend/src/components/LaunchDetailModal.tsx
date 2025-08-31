@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Coins, Hash, Users, Eye, Clock, TrendingUp, Shield, Zap } from 'lucide-react';
-import { ethers } from 'ethers';
+import { X, Calendar, Coins, Hash, Users, Eye, Clock, TrendingUp } from 'lucide-react';
 import { LaunchImage } from './ImageManager';
 
 interface LaunchDetailModalProps {
