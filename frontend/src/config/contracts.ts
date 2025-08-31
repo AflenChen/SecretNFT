@@ -8,7 +8,19 @@ const CONTRACT_ADDRESSES = {
   NETWORK: {
     name: "sepolia",
     chainId: 11155111,
-    rpcUrl: "https://rpc.sepolia.org"
+    rpcUrl: "https://rpc.sepolia.org",
+    backupRpcUrls: [
+      "https://eth-sepolia.public.blastapi.io",
+      "https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      "https://rpc2.sepolia.org",
+      "https://sepolia.drpc.org"
+    ],
+    blockExplorerUrls: ["https://sepolia.etherscan.io/"],
+    nativeCurrency: {
+      name: "Sepolia Ether",
+      symbol: "SEP",
+      decimals: 18
+    }
   }
 };
 

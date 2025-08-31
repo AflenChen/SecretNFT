@@ -182,60 +182,118 @@ function App() {
                 symbol: 'SEP',
                 decimals: 18
               },
-              rpcUrls: ['https://rpc.sepolia.org'],
+              rpcUrls: [
+                'https://rpc.sepolia.org',
+                'https://eth-sepolia.public.blastapi.io',
+                'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'
+              ],
               blockExplorerUrls: ['https://sepolia.etherscan.io/']
             }]
           });
         } catch (addError) {
           console.error('Error adding Sepolia network:', addError);
-          alert('Failed to add Sepolia network to MetaMask');
+          alert('Failed to add Sepolia network to MetaMask. Please add it manually.');
         }
+      } else {
+        console.error('Error switching to Sepolia network:', switchError);
+        alert('Please switch to Sepolia testnet in MetaMask manually.');
       }
     }
   };
 
   const connectWallet = async () => {
-    if (typeof window.ethereum !== 'undefined') {
+    if (typeof window.ethereum === 'undefined') {
+      alert('Please install MetaMask!');
+      return;
+    }
+
+    try {
+      // First, ensure we're on the correct network
+      await switchToSepolia();
+      
+      // Create provider
+      const provider = new ethers.BrowserProvider(window.ethereum, undefined, {
+        polling: true,
+        pollingInterval: 1000
+      });
+      
+      // Try multiple methods to get accounts
+      let accounts;
+      let accountError;
+      
+      // Method 1: Try provider.send
       try {
-        // First, ensure we're on the correct network
-        await switchToSepolia();
-        
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        
-        // Add retry mechanism for account request
-        let accounts;
+        accounts = await provider.send("eth_requestAccounts", []);
+      } catch (error) {
+        console.log('Method 1 failed, trying method 2:', error);
+        accountError = error;
+      }
+      
+      // Method 2: Try direct ethereum.request
+      if (!accounts) {
         try {
-          accounts = await provider.send("eth_requestAccounts", []);
-        } catch (accountError) {
-          console.error('Account request failed, trying alternative method:', accountError);
-          // Try alternative method
           accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        } catch (error) {
+          console.log('Method 2 failed, trying method 3:', error);
+          accountError = error;
         }
-        
-        const account = accounts[0];
-        const signer = await provider.getSigner();
-        
-        // Verify we're on the correct network
+      }
+      
+      // Method 3: Try with a delay
+      if (!accounts) {
+        try {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        } catch (error) {
+          console.log('Method 3 failed:', error);
+          accountError = error;
+        }
+      }
+      
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found. Please unlock MetaMask and try again.');
+      }
+      
+      const account = accounts[0];
+      console.log('Account found:', account);
+      
+      // Get signer
+      const signer = await provider.getSigner();
+      
+      // Verify we're on the correct network
+      try {
         const network = await provider.getNetwork();
+        console.log('Current network:', network);
         if (network.chainId !== 11155111n) { // Sepolia chainId
           alert('Please switch to Sepolia testnet in MetaMask');
           return;
         }
-        
-        setProvider(provider);
-        setSigner(signer);
-        setAccount(account);
-        
-        // Set up contracts
-        setupContracts(signer);
-        
-        console.log('Wallet connected:', account);
-      } catch (error) {
-        console.error('Error connecting wallet:', error);
+      } catch (networkError) {
+        console.warn('Could not verify network, continuing anyway:', networkError);
+      }
+      
+      setProvider(provider);
+      setSigner(signer);
+      setAccount(account);
+      
+      // Set up contracts
+      setupContracts(signer);
+      
+      console.log('Wallet connected successfully:', account);
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+      
+      // Provide more specific error messages
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('User rejected')) {
+        alert('Wallet connection was rejected. Please try again and approve the connection in MetaMask.');
+      } else if (errorMessage.includes('No accounts found')) {
+        alert('No accounts found. Please unlock MetaMask and try again.');
+      } else if (errorMessage.includes('network')) {
+        alert('Network error. Please make sure you\'re connected to Sepolia testnet in MetaMask.');
+      } else {
         alert('Failed to connect wallet. Please try again. Make sure MetaMask is unlocked and you\'re on Sepolia testnet.');
       }
-    } else {
-      alert('Please install MetaMask!');
     }
   };
 
