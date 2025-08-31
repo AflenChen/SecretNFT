@@ -168,7 +168,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({ isOpen, onWalletSelect,
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-900">选择钱包</h2>
+          <h2 className="text-xl font-bold text-gray-900">Select Wallet</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-xl font-bold"
@@ -194,12 +194,12 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({ isOpen, onWalletSelect,
                   {wallet.name}
                 </div>
                 <div className={`text-sm ${wallet.isInstalled ? 'text-gray-600' : 'text-gray-500'}`}>
-                  {wallet.isInstalled ? '已安装' : '点击安装'}
+                  {wallet.isInstalled ? 'Installed' : 'Click to install'}
                 </div>
               </div>
               {!wallet.isInstalled && (
                 <span className="text-xs bg-gray-300 text-gray-700 px-2 py-1 rounded font-medium">
-                  安装
+                  Install
                 </span>
               )}
             </button>
@@ -207,7 +207,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({ isOpen, onWalletSelect,
         </div>
         
         <div className="mt-4 text-xs text-gray-600 text-center font-medium">
-          连接钱包后会自动切换到 Sepolia 测试网
+          Wallet will automatically switch to Sepolia testnet after connection
         </div>
       </div>
     </div>
