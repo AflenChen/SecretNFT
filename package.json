@@ -1,0 +1,45 @@
+{
+  "name": "secretnft",
+  "version": "1.0.0",
+  "description": "A confidential NFT launch platform using FHEVM",
+  "main": "index.js",
+  "scripts": {
+    "setup": "node scripts/setup-env.js",
+    "setup:hardhat": "hardhat run scripts/setup.ts",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/one-click-deploy.ts --network sepolia",
+    "deploy:local": "hardhat run scripts/one-click-deploy.ts --network localhost",
+    "deploy:demo": "hardhat run scripts/one-click-deploy.ts --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy-with-config.ts --network sepolia",
+    "deploy:mainnet": "hardhat run scripts/deploy-with-config.ts --network mainnet",
+    "node": "hardhat node",
+    "clean": "hardhat clean",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build"
+  },
+  "keywords": [
+    "fhevm",
+    "nft",
+    "privacy",
+    "blockchain",
+    "ethereum"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@fhevm/solidity": "^0.7.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "hardhat": "^2.19.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@fhevm/hardhat-plugin": "^0.0.1-0",
+    "@zama-fhe/oracle-solidity": "^0.0.4-0",
+    "dotenv": "^17.2.1",
+    "ethers": "^6.8.0"
+  }
+}

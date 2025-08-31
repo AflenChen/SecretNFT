@@ -1,0 +1,47 @@
+{
+  "name": "SecretNFT Genesis #1",
+  "description": "The first NFT in the SecretNFT Genesis Collection. This represents the beginning of confidential NFT launches powered by Fully Homomorphic Encryption (FHE) technology.",
+  "image": "ipfs://QmYourImageHashHere/genesis-nft.svg",
+  "external_url": "https://secretnft.com",
+  "attributes": [
+    {
+      "trait_type": "Collection",
+      "value": "Genesis"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Technology",
+      "value": "FHEVM"
+    },
+    {
+      "trait_type": "Privacy Level",
+      "value": "Maximum"
+    },
+    {
+      "trait_type": "Launch Type",
+      "value": "Confidential"
+    },
+    {
+      "trait_type": "Edition",
+      "value": "1 of 1"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "genesis-nft.svg",
+        "type": "image/svg+xml"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "0x764DCef1a9De771443f472B7160cC86691F90499",
+        "share": 100
+      }
+    ]
+  }
+}

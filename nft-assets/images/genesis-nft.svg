@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 渐变定义 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#16213e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f3460;stop-opacity:1" />
+    </linearGradient>
+    
+    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#4ecdc4;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#45b7d1;stop-opacity:0.1" />
+    </radialGradient>
+    
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4ecdc4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#45b7d1;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 动画定义 -->
+    <animateTransform id="rotate" attributeName="transform" type="rotate" values="0 400 400;360 400 400" dur="20s" repeatCount="indefinite"/>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="800" height="800" fill="url(#bgGradient)"/>
+  
+  <!-- 发光效果 -->
+  <circle cx="400" cy="400" r="350" fill="url(#glowGradient)" opacity="0.3">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- 主要圆形 -->
+  <circle cx="400" cy="400" r="300" fill="none" stroke="#4ecdc4" stroke-width="3" opacity="0.8">
+    <animate attributeName="r" values="300;320;300" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- 内圈 -->
+  <circle cx="400" cy="400" r="200" fill="none" stroke="#ff6b6b" stroke-width="2" opacity="0.6">
+    <animate attributeName="r" values="200;220;200" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- 核心圆 -->
+  <circle cx="400" cy="400" r="100" fill="none" stroke="#45b7d1" stroke-width="4" opacity="0.9">
+    <animate attributeName="r" values="100;120;100" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- 中心图案 -->
+  <g transform="translate(400, 400)">
+    <!-- 六边形 -->
+    <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30" 
+             fill="none" stroke="#ff6b6b" stroke-width="3" opacity="0.8">
+      <animateTransform attributeName="transform" type="rotate" values="0;360" dur="10s" repeatCount="indefinite"/>
+    </polygon>
+    
+    <!-- 内部六边形 -->
+    <polygon points="0,-40 35,-20 35,20 0,40 -35,20 -35,-20" 
+             fill="none" stroke="#4ecdc4" stroke-width="2" opacity="0.6">
+      <animateTransform attributeName="transform" type="rotate" values="360;0" dur="8s" repeatCount="indefinite"/>
+    </polygon>
+    
+    <!-- 中心点 -->
+    <circle cx="0" cy="0" r="15" fill="#45b7d1" opacity="0.9">
+      <animate attributeName="r" values="15;20;15" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- 装饰性粒子 -->
+  <g opacity="0.7">
+    <circle cx="200" cy="200" r="3" fill="#ff6b6b">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="600" cy="200" r="3" fill="#4ecdc4">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="200" cy="600" r="3" fill="#45b7d1">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="1.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="600" cy="600" r="3" fill="#ff6b6b">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="2.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- 标题文字 -->
+  <text x="400" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="url(#textGradient)">
+    SecretNFT
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="400" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#ffffff" opacity="0.8">
+    Genesis Collection
+  </text>
+  
+  <!-- 底部信息 -->
+  <text x="400" y="750" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#ffffff" opacity="0.6">
+    Powered by FHEVM Technology
+  </text>
+  
+  <!-- 边框装饰 -->
+  <rect x="50" y="50" width="700" height="700" fill="none" stroke="#4ecdc4" stroke-width="2" opacity="0.5" rx="20"/>
+</svg>

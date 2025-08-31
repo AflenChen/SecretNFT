@@ -1,0 +1,15 @@
+// Auto-generated contract addresses
+// Generated on: 2025-08-31T06:59:39.897Z
+
+const CONTRACT_ADDRESSES = {
+  SECRET_NFT_LAUNCH_ADDRESS: "0x9FF0d44bf7321dA55A31024F0A9133599BBC47B3",
+  SECRET_NFT_ADDRESS: "0xEa3E289D84845636965C32AEd41d3F8412F8c1AC",
+  SECRET_NFT_FACTORY_ADDRESS: "0x8460711f559947cD419c1dB3404d04a3e3B9E255",
+  NETWORK: {
+    name: "sepolia",
+    chainId: 11155111,
+    rpcUrl: "https://eth-sepolia.g.alchemy.com/v2/Jf6yAV5m2XGr41Ly0VSw5GjmDU6xdMTa"
+  }
+};
+
+export default CONTRACT_ADDRESSES;
