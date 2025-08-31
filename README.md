@@ -6,6 +6,12 @@ A confidential NFT launch platform using FHEVM (Fully Homomorphic Encryption Vir
 
 **Visit the live application:** [https://secret-nft.vercel.app/](https://secret-nft.vercel.app/)
 
+## 🎥 Demo Video
+
+[![SecretNFT Demo](https://github.com/AflenChen/SecretNFT/raw/main/demo.mp4)](https://github.com/AflenChen/SecretNFT/raw/main/demo.mp4)
+
+**Direct Download**: [demo.mp4](https://github.com/AflenChen/SecretNFT/raw/main/demo.mp4)
+
 ## 🚀 Features
 
 ### Core Functionality
