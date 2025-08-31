@@ -1,223 +1,211 @@
-# SecretNFT - Confidential NFT Launch Platform
+# SecretNFT Platform
 
-SecretNFT is a confidential NFT launch platform built with FHEVM (Fully Homomorphic Encryption Virtual Machine) technology. The platform allows users to participate in NFT launches without revealing purchase information, protecting user privacy and trading strategies.
+A confidential NFT launch platform using FHEVM (Fully Homomorphic Encryption Virtual Machine) for true privacy in blockchain transactions.
+
+## 🌐 Live Demo
+
+**Visit the live application:** [https://secret-nft.vercel.app/](https://secret-nft.vercel.app/)
 
 ## 🚀 Features
 
-- **Confidential Price Discovery**: Uses FHE technology to encrypt NFT prices, preventing price manipulation
-- **Confidential Purchase Records**: User purchase amounts and payment amounts are completely encrypted
-- **Confidential Allocation Mechanism**: The NFT allocation process remains confidential
-- **Decentralized**: Based on Ethereum blockchain, no need to trust third parties
-- **Modern UI**: Responsive design with dark mode support
+### Core Functionality
+- **Confidential NFT Launches**: Create NFT launches with encrypted pricing
+- **Private Purchase Records**: All purchase amounts and participant data are encrypted
+- **FHEVM Integration**: True homomorphic encryption for on-chain privacy
+- **Multi-Network Support**: Deploy on Sepolia testnet and mainnet
+- **User-Friendly Interface**: Modern React frontend with wallet integration
 
-## 🛠️ Tech Stack
+### Privacy Features
+- **Encrypted Price Discovery**: NFT prices remain confidential during launches
+- **Private Participation**: Purchase amounts are encrypted and only visible to authorized parties
+- **Confidential Metadata**: NFT attributes can be encrypted using FHE operations
+- **Secure Access Control**: Role-based decryption permissions
+
+## 🏗️ Architecture
 
 ### Smart Contracts
-- **Solidity**: Smart contract development language
+
+#### 1. **SecretNFTLaunchFHE.sol** - Main Launch Contract
+- **FHE Variables**: Uses `euint32` and `euint64` for encrypted data
+- **Confidential Pricing**: NFT prices stored as encrypted values
+- **Private Statistics**: Total raised and sold amounts are encrypted
+- **User Participation**: Purchase records encrypted per user
+
+#### 2. **SecretNFTFHE.sol** - Confidential NFT Contract
+- **Encrypted Metadata**: NFT attributes stored as FHE variables
+- **Access Control**: Authorized decryptors can view confidential data
+- **FHE Operations**: Support for encrypted comparisons and aggregations
+- **Public Interface**: Standard ERC721 with additional privacy features
+
+#### 3. **SecretNFTFactoryFHE.sol** - Factory Contract
+- **Collection Creation**: Deploy new confidential NFT collections
+- **Creator Registration**: Automatic registration with launch contract
+- **Initial Minting**: Support for creating collections with initial encrypted NFTs
+
+### Frontend Application
+- **React + TypeScript**: Modern web application
+- **Ethers.js**: Blockchain interaction
+- **Tailwind CSS**: Beautiful, responsive UI
+- **MetaMask Integration**: Seamless wallet connection
+- **IPFS Support**: Decentralized metadata storage
+
+## 🔧 Technology Stack
+
+### Blockchain
+- **Solidity ^0.8.24**: Smart contract development
 - **FHEVM**: Fully Homomorphic Encryption Virtual Machine
-- **OpenZeppelin**: Secure contract library
-- **Hardhat**: Development framework
+- **OpenZeppelin**: Secure contract libraries
+- **Hardhat**: Development and deployment framework
 
 ### Frontend
-- **React**: User interface framework
-- **TypeScript**: Type safety
-- **Tailwind CSS**: Styling framework
+- **React 18**: User interface
+- **TypeScript**: Type-safe development
+- **Vite**: Fast build tool
+- **Tailwind CSS**: Utility-first styling
 - **Ethers.js**: Ethereum interaction
-- **Vite**: Build tool
 
-## 📁 Project Structure
+### Infrastructure
+- **Vercel**: Frontend deployment
+- **IPFS (Pinata)**: Decentralized storage
+- **Sepolia Testnet**: Testing environment
 
-```
-SecretNFT/
-├── contracts/                 # Smart contracts
-│   ├── SecretNFTLaunch.sol   # Main launch contract
-│   └── SecretNFT.sol         # NFT contract
-├── deploy/                   # Deployment scripts
-│   └── deploy.ts
-├── scripts/                  # Example scripts
-│   └── example-usage.ts
-├── test/                     # Test files
-│   └── SecretNFTLaunch.test.ts
-├── frontend/                 # Frontend application
-│   ├── src/
-│   │   ├── App.tsx
-│   │   ├── main.tsx
-│   │   └── index.css
-│   ├── package.json
-│   └── ...
-├── hardhat.config.ts         # Hardhat configuration
-├── package.json
-└── README.md
-```
+## 📦 Installation
 
-## 🚀 Quick Start
-
-### Requirements
-
+### Prerequisites
 - Node.js 18+
 - npm or yarn
 - MetaMask wallet
 
-### Install Dependencies
+### Setup
 
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/AflenChen/SecretNFT.git
+   cd SecretNFT
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   cd frontend && npm install
+   ```
+
+3. **Environment configuration**
+   ```bash
+   cp .env.example .env
+   # Add your configuration values
+   ```
+
+4. **Compile contracts**
+   ```bash
+   npm run compile
+   ```
+
+5. **Start development**
+   ```bash
+   # Terminal 1: Start local blockchain
+   npm run node
+   
+   # Terminal 2: Start frontend
+   npm run frontend:dev
+   ```
+
+## 🚀 Deployment
+
+### Local Development
 ```bash
-# Install backend dependencies
-npm install
-
-# Install frontend dependencies
-cd frontend
-npm install
-```
-
-### Configure Environment Variables
-
-Create a `.env` file:
-
-```env
-PRIVATE_KEY=your_private_key
-SEPOLIA_URL=https://sepolia.rpc.zama.ai
-```
-
-### Compile Contracts
-
-```bash
-npm run compile
-```
-
-### Run Tests
-
-```bash
-npm test
-```
-
-### Deploy Contracts
-
-```bash
-# Deploy to Sepolia testnet
-npm run deploy
-
-# Deploy to local network
 npm run deploy:local
 ```
 
-### Start Frontend
-
+### Sepolia Testnet
 ```bash
-cd frontend
-npm run dev
+npm run deploy:sepolia
 ```
 
-Visit http://localhost:3000 to view the application.
-
-## 📖 Usage Guide
-
-### 1. Create NFT Launch
-
-Platform administrators can create new NFT launches:
-
-```typescript
-const secretPrice = FHE.encrypt64(ethers.parseEther("0.1"));
-await secretNFTLaunch.createLaunch(
-  nftContractAddress,
-  100, // Total supply
-  startTime,
-  endTime,
-  secretPrice,
-  paymentTokenAddress
-);
-```
-
-### 2. Confidential Purchase of NFT
-
-Users can purchase NFTs confidentially:
-
-```typescript
-const amount = 2;
-const totalAmount = pricePerNFT * BigInt(amount);
-const encryptedAmount = FHE.encrypt64(totalAmount);
-
-await secretNFTLaunch.secretPurchase(
-  launchId,
-  amount,
-  encryptedAmount
-);
-```
-
-### 3. Finalize Launch
-
-Administrators finalize the launch and allocate NFTs:
-
-```typescript
-await secretNFTLaunch.finalizeLaunch(launchId);
-```
-
-### 4. Claim NFTs
-
-Users claim their purchased NFTs:
-
-```typescript
-await secretNFTLaunch.claimNFTs(launchId);
-```
-
-## 🔒 Privacy Protection
-
-SecretNFT uses FHE technology to protect the following information:
-
-- **Price Information**: NFT confidential prices are completely encrypted on-chain
-- **Purchase Records**: User purchase amounts and payment amounts are encrypted and stored
-- **Allocation Information**: The NFT allocation process remains confidential
-- **User Behavior**: Prevents other users from analyzing purchase patterns
-
-## 🧪 Testing
-
-Run the complete test suite:
-
+### Mainnet
 ```bash
-npm test
+npm run deploy:mainnet
 ```
 
-Test coverage:
-- Contract deployment
-- Launch creation
-- Confidential purchase
-- Launch finalization
-- NFT claiming
-- Permission control
+## 🔐 FHEVM Features
 
-## 📝 Contract Addresses
+### Encrypted Data Types
+- **euint32**: 32-bit encrypted unsigned integers
+- **euint64**: 64-bit encrypted unsigned integers
 
-After deployment, please update the contract addresses in the frontend application:
+### FHE Operations
+- **Addition**: `TFHE.add(a, b)`
+- **Multiplication**: `TFHE.mul(a, b)`
+- **Comparison**: `TFHE.gt(a, b)`, `TFHE.eq(a, b)`
+- **Encryption/Decryption**: `TFHE.encrypt()`, `TFHE.decrypt()`
 
-```typescript
-// Update in frontend/src/App.tsx
-const CONTRACT_ADDRESS = 'your_deployed_address';
-```
+### Privacy Guarantees
+- **Price Confidentiality**: NFT prices remain hidden during launches
+- **Purchase Privacy**: Individual purchase amounts are encrypted
+- **Metadata Protection**: Sensitive NFT attributes can be encrypted
+- **Access Control**: Only authorized parties can decrypt data
 
-## 🤝 Contributing
+## 📋 Usage
 
-Welcome contributions! Please follow these steps:
+### Creating an NFT Collection
+1. Connect your MetaMask wallet
+2. Navigate to "Create NFT Collection"
+3. Fill in collection details (name, symbol, metadata)
+4. Upload image to IPFS
+5. Deploy collection contract
 
-1. Fork the project
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### Launching an NFT
+1. Select your NFT collection
+2. Set launch parameters (supply, timing)
+3. Set confidential price (encrypted)
+4. Create launch
+
+### Participating in a Launch
+1. Browse available launches
+2. Connect wallet to Sepolia testnet
+3. Purchase NFTs with encrypted amounts
+4. Claim NFTs after launch finalization
+
+## 🔒 Security Features
+
+- **Reentrancy Protection**: All external calls protected
+- **Access Control**: Role-based permissions
+- **Input Validation**: Comprehensive parameter checks
+- **Emergency Functions**: Owner can pause or withdraw funds
+- **FHE Security**: Cryptographic privacy guarantees
+
+## 🌐 Networks
+
+- **Sepolia Testnet**: Primary testing environment
+- **Mainnet**: Production deployment (when ready)
+- **Local Hardhat**: Development and testing
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🤝 Contributing
 
-- [Zama](https://zama.ai/) - FHEVM technology
-- [OpenZeppelin](https://openzeppelin.com/) - Secure contract library
-- [Hardhat](https://hardhat.org/) - Development framework
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-## 📞 Contact Us
+## 📞 Support
 
-- Project Homepage: [GitHub](https://github.com/your-username/SecretNFT)
-- Issue Reports: [Issues](https://github.com/your-username/SecretNFT/issues)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/AflenChen/SecretNFT/issues)
+- **Documentation**: See [docs/](docs/) folder for detailed guides
+- **Community**: Join our discussions on GitHub
+
+## 🎯 Roadmap
+
+- [ ] **FHEVM Mainnet Deployment**: Deploy to mainnet with full FHE support
+- [ ] **Advanced Privacy Features**: Additional FHE operations and privacy guarantees
+- [ ] **Mobile App**: Native mobile application
+- [ ] **Cross-Chain Support**: Multi-chain deployment
+- [ ] **DAO Governance**: Community governance for platform decisions
 
 ---
 
-**Note**: This is a demonstration project. Please conduct thorough security audits before using in production environments.
+**Built with ❤️ using FHEVM for true blockchain privacy**
