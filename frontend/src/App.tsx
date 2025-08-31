@@ -160,11 +160,11 @@ function App() {
     }
   };
 
-  const switchToSepolia = async () => {
-    if (typeof window.ethereum === 'undefined') return;
+  const switchToSepolia = async (walletProvider: any) => {
+    if (typeof walletProvider === 'undefined') return;
     
     try {
-      await window.ethereum.request({
+      await walletProvider.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: '0xaa36a7' }], // Sepolia chainId
       });
@@ -172,7 +172,7 @@ function App() {
       // This error code indicates that the chain has not been added to MetaMask
       if (switchError.code === 4902) {
         try {
-          await window.ethereum.request({
+          await walletProvider.request({
             method: 'wallet_addEthereumChain',
             params: [{
               chainId: '0xaa36a7',
@@ -192,27 +192,47 @@ function App() {
           });
         } catch (addError) {
           console.error('Error adding Sepolia network:', addError);
-          alert('Failed to add Sepolia network to MetaMask. Please add it manually.');
+          alert('Failed to add Sepolia network to your wallet. Please add it manually.');
         }
       } else {
         console.error('Error switching to Sepolia network:', switchError);
-        alert('Please switch to Sepolia testnet in MetaMask manually.');
+        alert('Please switch to Sepolia testnet in your wallet manually.');
       }
     }
   };
 
   const connectWallet = async () => {
-    if (typeof window.ethereum === 'undefined') {
-      alert('Please install MetaMask!');
+    // Check for any Web3 wallet
+    if (typeof window.ethereum === 'undefined' && typeof window.okxwallet === 'undefined') {
+      alert('Please install a Web3 wallet like MetaMask, OKX Wallet, or any other compatible wallet!');
       return;
     }
 
     try {
+      // Try to get the wallet provider
+      let walletProvider;
+      let walletName = 'Unknown';
+      
+      // Try different wallet providers
+      if (typeof window.ethereum !== 'undefined') {
+        walletProvider = window.ethereum;
+        walletName = 'MetaMask';
+      } else if (typeof window.okxwallet !== 'undefined') {
+        walletProvider = window.okxwallet;
+        walletName = 'OKX Wallet';
+      }
+      
+      if (!walletProvider) {
+        throw new Error('No compatible wallet found');
+      }
+      
+      console.log(`Connecting to ${walletName}...`);
+      
       // First, ensure we're on the correct network
-      await switchToSepolia();
+      await switchToSepolia(walletProvider);
       
       // Create provider
-      const provider = new ethers.BrowserProvider(window.ethereum, undefined, {
+      const provider = new ethers.BrowserProvider(walletProvider as any, undefined, {
         polling: true,
         pollingInterval: 1000
       });
@@ -229,10 +249,10 @@ function App() {
         accountError = error;
       }
       
-      // Method 2: Try direct ethereum.request
+      // Method 2: Try direct wallet request
       if (!accounts) {
         try {
-          accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          accounts = await walletProvider.request({ method: 'eth_requestAccounts' });
         } catch (error) {
           console.log('Method 2 failed, trying method 3:', error);
           accountError = error;
@@ -243,7 +263,7 @@ function App() {
       if (!accounts) {
         try {
           await new Promise(resolve => setTimeout(resolve, 1000));
-          accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          accounts = await walletProvider.request({ method: 'eth_requestAccounts' });
         } catch (error) {
           console.log('Method 3 failed:', error);
           accountError = error;
@@ -251,7 +271,7 @@ function App() {
       }
       
       if (!accounts || accounts.length === 0) {
-        throw new Error('No accounts found. Please unlock MetaMask and try again.');
+        throw new Error('No accounts found. Please unlock your wallet and try again.');
       }
       
       const account = accounts[0];
@@ -260,13 +280,13 @@ function App() {
       // Get signer
       const signer = await provider.getSigner();
       
-      // Verify we're on the correct network
+      // Verify we're on the correct network (but don't block if we can't verify)
       try {
         const network = await provider.getNetwork();
         console.log('Current network:', network);
         if (network.chainId !== 11155111n) { // Sepolia chainId
-          alert('Please switch to Sepolia testnet in MetaMask');
-          return;
+          console.warn('Not on Sepolia network, but continuing...');
+          // Don't block the connection, just warn
         }
       } catch (networkError) {
         console.warn('Could not verify network, continuing anyway:', networkError);
@@ -279,20 +299,20 @@ function App() {
       // Set up contracts
       setupContracts(signer);
       
-      console.log('Wallet connected successfully:', account);
+      console.log(`Wallet connected successfully: ${account} (${walletName})`);
     } catch (error) {
       console.error('Error connecting wallet:', error);
       
       // Provide more specific error messages
       const errorMessage = error instanceof Error ? error.message : String(error);
       if (errorMessage.includes('User rejected')) {
-        alert('Wallet connection was rejected. Please try again and approve the connection in MetaMask.');
+        alert('Wallet connection was rejected. Please try again and approve the connection in your wallet.');
       } else if (errorMessage.includes('No accounts found')) {
-        alert('No accounts found. Please unlock MetaMask and try again.');
+        alert('No accounts found. Please unlock your wallet and try again.');
       } else if (errorMessage.includes('network')) {
-        alert('Network error. Please make sure you\'re connected to Sepolia testnet in MetaMask.');
+        alert('Network error. Please make sure you\'re connected to Sepolia testnet in your wallet.');
       } else {
-        alert('Failed to connect wallet. Please try again. Make sure MetaMask is unlocked and you\'re on Sepolia testnet.');
+        alert('Failed to connect wallet. Please try again. Make sure your wallet is unlocked and you\'re on Sepolia testnet.');
       }
     }
   };
