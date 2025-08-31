@@ -11,6 +11,8 @@ interface NFTPublisherProps {
   onClose: () => void;
   onPublish: (nftData: NFTData) => void;
   loading: boolean;
+  provider?: ethers.BrowserProvider | null;
+  signer?: ethers.JsonRpcSigner | null;
 }
 
 interface NFTData {
@@ -36,7 +38,7 @@ const NFTFactoryABI = [
   "event NFTCollectionCreated(address indexed collectionAddress, address indexed creator, string name, string symbol, uint256 maxSupply)"
 ];
 
-export default function NFTPublisher({ isOpen, onClose, onPublish }: NFTPublisherProps) {
+export default function NFTPublisher({ isOpen, onClose, onPublish, provider, signer }: NFTPublisherProps) {
       // Set default time
   const now = new Date();
       const endTime = new Date(now.getTime() + 24 * 60 * 60 * 1000); // End after 24 hours
@@ -138,47 +140,18 @@ export default function NFTPublisher({ isOpen, onClose, onPublish }: NFTPublishe
       return;
     }
 
-    // Check wallet connection
-    if (typeof window.ethereum === 'undefined') {
-      alert('Please install MetaMask!');
+    // Check if provider and signer are available
+    if (!provider || !signer) {
+      alert('Please connect your wallet first!');
       setLoading(false);
       return;
     }
 
     try {
       setUploadProgress(0);
-      setDeploymentStep('Connecting to wallet...');
+      setDeploymentStep('Checking wallet connection...');
 
-      // Try to get the wallet provider with better error handling
-      let walletProvider;
-      if (typeof window.ethereum !== 'undefined') {
-        walletProvider = window.ethereum;
-      } else if (typeof window.okxwallet !== 'undefined') {
-        walletProvider = window.okxwallet;
-      } else {
-        alert('No compatible wallet found. Please install MetaMask or OKX Wallet!');
-        setLoading(false);
-        return;
-      }
-
-      // Create provider with better configuration
-      const provider = new ethers.BrowserProvider(walletProvider, undefined, {
-        polling: true,
-        pollingInterval: 1000
-      });
-
-      // Try to get signer with retry mechanism
-      let signer;
-      try {
-        signer = await provider.getSigner();
-      } catch (signerError) {
-        console.error('Error getting signer:', signerError);
-        alert('Failed to connect wallet. Please make sure your wallet is unlocked and try again.');
-        setLoading(false);
-        return;
-      }
-      
-      // Check network with better error handling
+      // Check network
       try {
         const network = await provider.getNetwork();
         console.log('Current network:', network);
