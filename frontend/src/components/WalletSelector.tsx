@@ -168,10 +168,10 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({ isOpen, onWalletSelect,
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">选择钱包</h2>
+          <h2 className="text-xl font-bold text-gray-900">选择钱包</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 text-xl font-bold"
           >
             ✕
           </button>
@@ -184,19 +184,21 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({ isOpen, onWalletSelect,
               onClick={() => handleWalletSelect(wallet)}
               className={`w-full p-4 border rounded-lg flex items-center space-x-3 transition-colors ${
                 wallet.isInstalled
-                  ? 'border-gray-300 hover:border-blue-500 hover:bg-blue-50'
-                  : 'border-gray-200 bg-gray-50 text-gray-500'
+                  ? 'border-gray-300 hover:border-blue-500 hover:bg-blue-50 bg-white text-gray-900'
+                  : 'border-gray-200 bg-gray-100 text-gray-600'
               }`}
             >
               <span className="text-2xl">{wallet.icon}</span>
               <div className="flex-1 text-left">
-                <div className="font-medium">{wallet.name}</div>
-                <div className="text-sm text-gray-500">
+                <div className={`font-medium ${wallet.isInstalled ? 'text-gray-900' : 'text-gray-700'}`}>
+                  {wallet.name}
+                </div>
+                <div className={`text-sm ${wallet.isInstalled ? 'text-gray-600' : 'text-gray-500'}`}>
                   {wallet.isInstalled ? '已安装' : '点击安装'}
                 </div>
               </div>
               {!wallet.isInstalled && (
-                <span className="text-xs bg-gray-200 px-2 py-1 rounded">
+                <span className="text-xs bg-gray-300 text-gray-700 px-2 py-1 rounded font-medium">
                   安装
                 </span>
               )}
@@ -204,7 +206,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({ isOpen, onWalletSelect,
           ))}
         </div>
         
-        <div className="mt-4 text-xs text-gray-500 text-center">
+        <div className="mt-4 text-xs text-gray-600 text-center font-medium">
           连接钱包后会自动切换到 Sepolia 测试网
         </div>
       </div>
