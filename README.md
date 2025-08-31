@@ -8,7 +8,7 @@ A confidential NFT launch platform using FHEVM (Fully Homomorphic Encryption Vir
 
 ## 🎥 Demo Video
 
-[![SecretNFT Demo](https://github.com/AflenChen/SecretNFT/raw/main/demo.mp4)](https://github.com/AflenChen/SecretNFT/raw/main/demo.mp4)
+https://github.com/AflenChen/SecretNFT/assets/AflenChen/demo.mp4
 
 **Direct Download**: [demo.mp4](https://github.com/AflenChen/SecretNFT/raw/main/demo.mp4)
 
